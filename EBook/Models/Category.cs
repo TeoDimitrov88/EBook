@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 
 namespace EBook.Models
 {
@@ -9,6 +10,7 @@ namespace EBook.Models
         [Required]
         public string Name { get; set; } = null!;
 
+        [DisplayName("Display order")]
         public int DisplayOrder { get; set; }
 
         public DateTime CreatedDateTime { get; set; } = DateTime.Now;
