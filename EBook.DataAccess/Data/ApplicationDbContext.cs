@@ -1,7 +1,8 @@
-﻿using EBook.Models;
+﻿
+using EBook.Models;
 using Microsoft.EntityFrameworkCore;
 
-namespace EBook.Data
+namespace EBook.DataAccess
 {
     public class ApplicationDbContext :DbContext
     {

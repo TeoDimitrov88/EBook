@@ -1,4 +1,6 @@
-﻿using EBook.Data;
+﻿
+using EBook.DataAccess;
+using EBook.DataAccess.Repository.IRepository;
 using EBook.Models;
 using Microsoft.AspNetCore.Mvc;
 
@@ -6,14 +8,14 @@ namespace EBook.Controllers
 {
     public class CategoryController : Controller
     {
-        private readonly ApplicationDbContext context;
-        public CategoryController(ApplicationDbContext _context)
+        private readonly IUnitOfWork unitOfWork;
+        public CategoryController(IUnitOfWork _unitOfWork)
         {
-            context = _context;
+            unitOfWork = _unitOfWork;
         }
         public IActionResult Index()
         {
-            IEnumerable<Category> CategoryList= context.Categories;
+            IEnumerable<Category> CategoryList= unitOfWork.Category.GetAll();
             return View(CategoryList);
         }
         //Get method
@@ -32,8 +34,8 @@ namespace EBook.Controllers
             {
                 return View(category);
             }
-            context.Categories.Add(category);
-            context.SaveChanges();
+            unitOfWork.Category.Add(category);
+            unitOfWork.Save();
             TempData["success"] = "Category created successfully";
            
             return RedirectToAction(nameof(Index));
@@ -47,7 +49,8 @@ namespace EBook.Controllers
             {
                 return NotFound();
             }
-            var categoryFromDb = context.Categories.Find(id);
+            //var categoryFromDb = context.Categories.Find(id);
+            var categoryFromDb = unitOfWork.Category.GetFirstOrDefault(u => u.Id==id);
            
             if (categoryFromDb == null) 
             {
@@ -65,8 +68,8 @@ namespace EBook.Controllers
             {
                 return View(category);
             }
-            context.Categories.Update(category);
-            context.SaveChanges();
+            unitOfWork.Category.Update(category);
+            unitOfWork.Save();
             TempData["success"] = "Category updated successfully";
 
             return RedirectToAction(nameof(Index));
@@ -80,8 +83,8 @@ namespace EBook.Controllers
             {
                 return NotFound();
             }
-            var categoryFromDb = context.Categories.Find(id);
-
+            //var categoryFromDb = context.Categories.Find(id);
+            var categoryFromDb = unitOfWork.Category.GetFirstOrDefault(u=>u.Id==id);
             if (categoryFromDb == null)
             {
                 return NotFound();
@@ -94,13 +97,13 @@ namespace EBook.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult DeletePOST(int id)
         {
-            var category= context.Categories.Find(id);
+            var category= unitOfWork.Category.GetFirstOrDefault(u => u.Id == id);
             if (category==null)
             {
                 return NotFound();
             }
-            context.Categories.Remove(category);
-            context.SaveChanges();
+            unitOfWork.Category.Remove(category);
+            unitOfWork.Save();
             TempData["success"] = "Category deleted successfully";
 
             return RedirectToAction(nameof(Index));
