@@ -11,6 +11,7 @@ namespace EBook.Models
         public string Name { get; set; } = null!;
 
         [DisplayName("Display order")]
+        [Range(1,500,ErrorMessage ="Display order must be between 1 and 100")]
         public int DisplayOrder { get; set; }
 
         public DateTime CreatedDateTime { get; set; } = DateTime.Now;
