@@ -1,13 +1,14 @@
-﻿
-using EBook.DataAccess;
+﻿using EBook.DataAccess;
 using EBook.DataAccess.Repository.IRepository;
 using EBook.Models;
 using Microsoft.AspNetCore.Mvc;
 
-namespace EBook.Controllers
+namespace EBookWeb.Areas.Admin.Controllers
 {
+    [Area("Admin")]
     public class CategoryController : Controller
     {
+        
         private readonly IUnitOfWork unitOfWork;
         public CategoryController(IUnitOfWork _unitOfWork)
         {
@@ -15,7 +16,7 @@ namespace EBook.Controllers
         }
         public IActionResult Index()
         {
-            IEnumerable<Category> CategoryList= unitOfWork.Category.GetAll();
+            IEnumerable<Category> CategoryList = unitOfWork.Category.GetAll();
             return View(CategoryList);
         }
         //Get method
@@ -30,14 +31,14 @@ namespace EBook.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult Create(Category category)
         {
-            if (!ModelState.IsValid) 
+            if (!ModelState.IsValid)
             {
                 return View(category);
             }
             unitOfWork.Category.Add(category);
             unitOfWork.Save();
             TempData["success"] = "Category created successfully";
-           
+
             return RedirectToAction(nameof(Index));
         }
 
@@ -45,14 +46,14 @@ namespace EBook.Controllers
         [HttpGet]
         public IActionResult Edit(int? id)
         {
-            if(id == null|| id==0)
+            if (id == null || id == 0)
             {
                 return NotFound();
             }
             //var categoryFromDb = context.Categories.Find(id);
-            var categoryFromDb = unitOfWork.Category.GetFirstOrDefault(u => u.Id==id);
-           
-            if (categoryFromDb == null) 
+            var categoryFromDb = unitOfWork.Category.GetFirstOrDefault(u => u.Id == id);
+
+            if (categoryFromDb == null)
             {
                 return NotFound();
             }
@@ -84,7 +85,7 @@ namespace EBook.Controllers
                 return NotFound();
             }
             //var categoryFromDb = context.Categories.Find(id);
-            var categoryFromDb = unitOfWork.Category.GetFirstOrDefault(u=>u.Id==id);
+            var categoryFromDb = unitOfWork.Category.GetFirstOrDefault(u => u.Id == id);
             if (categoryFromDb == null)
             {
                 return NotFound();
@@ -97,8 +98,8 @@ namespace EBook.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult DeletePOST(int id)
         {
-            var category= unitOfWork.Category.GetFirstOrDefault(u => u.Id == id);
-            if (category==null)
+            var category = unitOfWork.Category.GetFirstOrDefault(u => u.Id == id);
+            if (category == null)
             {
                 return NotFound();
             }

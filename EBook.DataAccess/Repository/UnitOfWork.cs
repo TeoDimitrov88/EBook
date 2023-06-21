@@ -15,9 +15,10 @@ namespace EBook.DataAccess.Repository
         {
             context = _context;
             Category = new CategoryRepository(context);
+            CoverType= new CoverTypeRepository(context);
         }
         public ICategoryRepository Category { get; private set; }
-
+        public ICoverTypeRepository CoverType { get;private  set; }
         public void Save()
         {
             context.SaveChanges();
