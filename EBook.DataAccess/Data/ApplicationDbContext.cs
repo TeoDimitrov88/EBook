@@ -1,5 +1,6 @@
 ﻿
 using EBook.Models;
+using EBook.Models.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace EBook.DataAccess
@@ -12,6 +13,6 @@ namespace EBook.DataAccess
         }
         public DbSet<Category> Categories { get; set; }
         public DbSet<CoverType> CoverTypes { get; set; }     
-
+        public DbSet<Product> Products { get; set; }
     }
 }
