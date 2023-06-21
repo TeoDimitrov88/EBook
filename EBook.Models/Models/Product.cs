@@ -21,7 +21,7 @@ namespace EBook.Models.Models
         [Required]
         public string Author { get; set; }
         [Required]
-        [Range(1,10000)]
+        [Range(1, 10000)]
         public decimal ListPrice { get; set; }
         [Required]
         [Range(1, 10000)]
@@ -40,6 +40,7 @@ namespace EBook.Models.Models
         public Category Category { get; set; }
         [Required]
         public int CoverTypeId { get; set; }
+        [ForeignKey("CoverTypeId")]
         public CoverType CoverType { get; set; }
     }
 }
