@@ -39,31 +39,31 @@ namespace EBookWeb.Areas.Admin.Controllers
                     Value = i.Id.ToString()
                 }),
             };
-            
+
             if (id == null || id == 0)
             {
                 //create product
-               return View(productViewModel);
+                return View(productViewModel);
             }
             else
             {
                 //update product
             }
-            return View();
+            return View(productViewModel);
         }
 
         //Post method
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Create(CoverType coverType)
+        public IActionResult Upsert(ProductViewModel product, IFormFile file)
         {
             if (!ModelState.IsValid)
             {
-                return View(coverType);
+                return View(product);
             }
-            unitOfWork.CoverType.Add(coverType);
+            //unitOfWork.CoverType.Add(product);
             unitOfWork.Save();
-            TempData["success"] = "Cover Type created successfully";
+            TempData["success"] = "Cover Type updated successfully";
 
             return RedirectToAction(nameof(Index));
         }
@@ -110,7 +110,7 @@ namespace EBookWeb.Areas.Admin.Controllers
             {
                 return NotFound();
             }
-           
+
             var coverTypeFromDb = unitOfWork.CoverType.GetFirstOrDefault(u => u.Id == id);
             if (coverTypeFromDb == null)
             {
