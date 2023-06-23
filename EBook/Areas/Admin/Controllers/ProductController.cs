@@ -1,7 +1,10 @@
 ﻿using EBook.DataAccess;
 using EBook.DataAccess.Repository.IRepository;
 using EBook.Models;
+using EBook.Models.Models;
+using EBook.Models.ViewModels;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace EBookWeb.Areas.Admin.Controllers
 {
@@ -20,8 +23,32 @@ namespace EBookWeb.Areas.Admin.Controllers
         }
         //Get method
         [HttpGet]
-        public IActionResult Create()
+        public IActionResult Upsert(int? id)
         {
+            ProductViewModel productViewModel = new()
+            {
+                Product = new(),
+                CategoryList = unitOfWork.Category.GetAll().Select(i => new SelectListItem
+                {
+                    Text = i.Name,
+                    Value = i.Id.ToString()
+                }),
+                CoverTypeList = unitOfWork.CoverType.GetAll().Select(i => new SelectListItem
+                {
+                    Text = i.Name,
+                    Value = i.Id.ToString()
+                }),
+            };
+            
+            if (id == null || id == 0)
+            {
+                //create product
+               return View(productViewModel);
+            }
+            else
+            {
+                //update product
+            }
             return View();
         }
 
