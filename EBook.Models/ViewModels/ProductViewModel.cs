@@ -1,4 +1,5 @@
 ﻿using EBook.Models.Models;
+using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using System;
 using System.Collections.Generic;
@@ -11,9 +12,9 @@ namespace EBook.Models.ViewModels
     public class ProductViewModel
     {
         public Product Product { get; set; }
-
+        [ValidateNever]
         public IEnumerable<SelectListItem> CategoryList { get; set; }
-
+        [ValidateNever]
         public IEnumerable<SelectListItem> CoverTypeList { get; set; }
     }
 }

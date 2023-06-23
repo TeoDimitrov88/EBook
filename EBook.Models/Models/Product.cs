@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -13,11 +14,11 @@ namespace EBook.Models.Models
         [Key]
         public int Id { get; set; }
         [Required]
-        public string Title { get; set; }
+        public string Title { get; set; } = null!;
         [Required]
-        public string Description { get; set; }
+        public string Description { get; set; } = null!;
         [Required]
-        public string ISBN { get; set; }
+        public string ISBN { get; set; } = null!;
         [Required]
         public string Author { get; set; }
         [Required]
@@ -33,14 +34,17 @@ namespace EBook.Models.Models
         [Range(1, 10000)]
         public decimal priceFor50 { get; set; }
         [Required]
+        [ValidateNever]
         public string ImageURL { get; set; }
         [Required]
         public int CategoryId { get; set; }
         [ForeignKey("CategoryId")]
+        [ValidateNever]
         public Category Category { get; set; }
         [Required]
         public int CoverTypeId { get; set; }
         [ForeignKey("CoverTypeId")]
+        [ValidateNever]
         public CoverType CoverType { get; set; }
     }
 }
