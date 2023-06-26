@@ -1,4 +1,5 @@
 ﻿using EBook.DataAccess;
+using EBook.DataAccess.Repository;
 using EBook.DataAccess.Repository.IRepository;
 using EBook.Models;
 using EBook.Models.Models;
@@ -20,8 +21,7 @@ namespace EBookWeb.Areas.Admin.Controllers
         }
         public IActionResult Index()
         {
-            IEnumerable<CoverType> coverTypeList = unitOfWork.CoverType.GetAll();
-            return View(coverTypeList);
+            return View();
         }
         //Get method
         [HttpGet]
@@ -49,9 +49,10 @@ namespace EBookWeb.Areas.Admin.Controllers
             }
             else
             {
+                productViewModel.Product = unitOfWork.Product.GetFirstOrDefault(i => i.Id == id);
+                return View(productViewModel);
                 //update product
             }
-            return View(productViewModel);
         }
 
         //Post method
@@ -62,32 +63,32 @@ namespace EBookWeb.Areas.Admin.Controllers
             if (ModelState.IsValid)
             {
 
-            string wwwRootPath = webHostEnvironment.WebRootPath;
-            if (file != null)
-            {
-                string fileName = Guid.NewGuid().ToString();
-                var uploads = Path.Combine(wwwRootPath, @"images\products");
-                var extension = Path.GetExtension(file.FileName);
-
-                using (var fileStreams = new FileStream(Path.Combine(uploads, fileName + extension), FileMode.Create))
+                string wwwRootPath = webHostEnvironment.WebRootPath;
+                if (file != null)
                 {
-                    file.CopyTo(fileStreams);
-                };
-                obj.Product.ImageURL = @"\images\products\" + fileName + extension;
-            }
-            if (obj.Product.Id ==0 )
-            {
-                unitOfWork.Product.Add(obj.Product);
-            }
-            else
-            {
-            unitOfWork.Product.Update(obj.Product);
-            }
+                    string fileName = Guid.NewGuid().ToString();
+                    var uploads = Path.Combine(wwwRootPath, @"images\products");
+                    var extension = Path.GetExtension(file.FileName);
 
-            unitOfWork.Save();
-            TempData["success"] = "Product created successfully";
+                    using (var fileStreams = new FileStream(Path.Combine(uploads, fileName + extension), FileMode.Create))
+                    {
+                        file.CopyTo(fileStreams);
+                    };
+                    obj.Product.ImageURL = @"\images\products\" + fileName + extension;
+                }
+                if (obj.Product.Id == 0)
+                {
+                    unitOfWork.Product.Add(obj.Product);
+                }
+                else
+                {
+                    unitOfWork.Product.Update(obj.Product);
+                }
 
-            return RedirectToAction(nameof(Index));
+                unitOfWork.Save();
+                TempData["success"] = "Product created successfully";
+
+                return RedirectToAction(nameof(Index));
             }
             return View(obj);
         }
@@ -159,5 +160,13 @@ namespace EBookWeb.Areas.Admin.Controllers
 
             return RedirectToAction(nameof(Index));
         }
+        #region API CALLS
+        [HttpGet]
+        public IActionResult GetAll()
+        {
+            var productList = unitOfWork.Product.GetAll(includeProperties: "Category,CoverType");
+            return Json(new { data = productList });
+        }
+        #endregion
     }
 }

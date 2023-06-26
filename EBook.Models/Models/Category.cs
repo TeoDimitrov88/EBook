@@ -8,7 +8,7 @@ namespace EBook.Models
         [Key]
         public int Id { get; set; }
         [Required]
-        public string Name { get; set; } = null!;
+        public string Name { get; set; } 
 
         [DisplayName("Display order")]
         [Range(1,500,ErrorMessage ="Display order must be between 1 and 100")]
