@@ -70,6 +70,15 @@ namespace EBookWeb.Areas.Admin.Controllers
                     var uploads = Path.Combine(wwwRootPath, @"images\products");
                     var extension = Path.GetExtension(file.FileName);
 
+                    if (obj.Product.ImageURL != null)
+                    {
+                        var oldImagePath = Path.Combine(wwwRootPath, obj.Product.ImageURL.TrimStart('\\'));
+                        if (System.IO.File.Exists(oldImagePath))
+                        {
+                            System.IO.File.Delete(oldImagePath);
+                        }
+                    }
+
                     using (var fileStreams = new FileStream(Path.Combine(uploads, fileName + extension), FileMode.Create))
                     {
                         file.CopyTo(fileStreams);
@@ -127,45 +136,35 @@ namespace EBookWeb.Areas.Admin.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-        //Get method
-        [HttpGet]
-        public IActionResult Delete(int? id)
-        {
-            if (id == null || id == 0)
-            {
-                return NotFound();
-            }
-
-            var coverTypeFromDb = unitOfWork.CoverType.GetFirstOrDefault(u => u.Id == id);
-            if (coverTypeFromDb == null)
-            {
-                return NotFound();
-            }
-            return View(coverTypeFromDb);
-        }
-
-        //Post method
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public IActionResult DeletePOST(int id)
-        {
-            var coverType = unitOfWork.CoverType.GetFirstOrDefault(u => u.Id == id);
-            if (coverType == null)
-            {
-                return NotFound();
-            }
-            unitOfWork.CoverType.Remove(coverType);
-            unitOfWork.Save();
-            TempData["success"] = "Cover Type deleted successfully";
-
-            return RedirectToAction(nameof(Index));
-        }
+       
         #region API CALLS
         [HttpGet]
         public IActionResult GetAll()
         {
             var productList = unitOfWork.Product.GetAll(includeProperties: "Category,CoverType");
             return Json(new { data = productList });
+        }
+
+        
+        [HttpDelete]
+        public IActionResult Delete(int? id)
+        {
+            var obj = unitOfWork.Product.GetFirstOrDefault(u => u.Id == id);
+            if (obj == null)
+            {
+                return Json(new { success = false, message= "Error while deleting"});
+            }
+
+            var oldImagePath = Path.Combine(webHostEnvironment.WebRootPath, obj.ImageURL.TrimStart('\\'));
+            if (System.IO.File.Exists(oldImagePath))
+            {
+                System.IO.File.Delete(oldImagePath);
+            }
+
+            unitOfWork.Product.Remove(obj);
+            unitOfWork.Save();
+            return Json(new { success = true, message = "Delete Successfull!" });
+
         }
         #endregion
     }
