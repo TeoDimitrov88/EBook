@@ -11,12 +11,14 @@ using System.Text.Encodings.Web;
 using System.Threading;
 using System.Threading.Tasks;
 using EBook.DataAccess.Common;
+using EBook.DataAccess.Repository.IRepository;
 using EBook.Models.Models;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.WebUtilities;
@@ -34,14 +36,15 @@ namespace EBookWeb.Areas.Identity.Pages.Account
         private readonly ILogger<RegisterModel> _logger;
         private readonly IEmailSender _emailSender;
         private readonly RoleManager<IdentityRole> _roleManager;
-
+        private readonly IUnitOfWork _unitOfWork;
         public RegisterModel(
             UserManager<IdentityUser> userManager,
             IUserStore<IdentityUser> userStore,
             SignInManager<IdentityUser> signInManager,
             ILogger<RegisterModel> logger,
             IEmailSender emailSender,
-            RoleManager<IdentityRole> roleManager)
+            RoleManager<IdentityRole> roleManager,
+            IUnitOfWork unitOfWork)
         {
             _userManager = userManager;
             _userStore = userStore;
@@ -50,6 +53,7 @@ namespace EBookWeb.Areas.Identity.Pages.Account
             _logger = logger;
             _emailSender = emailSender;
             _roleManager = roleManager;
+            _unitOfWork = unitOfWork;
         }
 
         /// <summary>
@@ -117,8 +121,13 @@ namespace EBookWeb.Areas.Identity.Pages.Account
             public string? PostCode { get; set; }
             public string PhoneNumber { get; set; }
             public string Role { get; set; }
+            public int? CompanyId { get; set; }
 
-            public IEnumerable<SelectListItem>  RoleList { get; set; }
+            [ValidateNever]
+            public IEnumerable<SelectListItem> RoleList { get; set; }
+            [ValidateNever]
+            public IEnumerable<SelectListItem> CompanyList { get; set; }
+
         }
 
 
@@ -140,7 +149,12 @@ namespace EBookWeb.Areas.Identity.Pages.Account
                 {
                     Text = i,
                     Value = i
-                })
+                }),
+                CompanyList = _unitOfWork.Company.GetAll().Select(x => new SelectListItem()
+                {
+                    Text = x.Name,
+                    Value = x.Id.ToString()
+                }),
             };
         }
 
@@ -148,7 +162,7 @@ namespace EBookWeb.Areas.Identity.Pages.Account
         {
             returnUrl ??= Url.Content("~/");
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
-            
+
             if (ModelState.IsValid)
             {
                 var user = CreateUser();
@@ -168,13 +182,13 @@ namespace EBookWeb.Areas.Identity.Pages.Account
                 {
                     _logger.LogInformation("User created a new account with password.");
 
-                    if (Input.Role== null)
+                    if (Input.Role == null)
                     {
                         await _userManager.AddToRoleAsync(user, StaticConst.UserRole);
                     }
                     else
                     {
-                        await _userManager.AddToRoleAsync(user,Input.Role); 
+                        await _userManager.AddToRoleAsync(user, Input.Role);
                     }
                     var userId = await _userManager.GetUserIdAsync(user);
                     var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
