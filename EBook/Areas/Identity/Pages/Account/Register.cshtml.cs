@@ -175,7 +175,10 @@ namespace EBookWeb.Areas.Identity.Pages.Account
                 user.PostCode = Input.PostCode;
                 user.Name = Input.Name;
                 user.PhoneNumber = Input.PhoneNumber;
-
+                if (Input.Role == StaticConst.CompanyRole)
+                {
+                    user.CompanyId = Input.CompanyId;
+                }
                 var result = await _userManager.CreateAsync(user, Input.Password);
 
                 if (result.Succeeded)
