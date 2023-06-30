@@ -21,6 +21,8 @@ namespace EBook.DataAccess.Repository
             Company = new CompanyRepository(context);
             ApplicationUser= new ApplicationUserRepository(context);
             ShoppingCart =new ShoppingCartRepository(context);
+            Order = new OrderRepository(context);
+            OrderDetails= new OrderDetailsRepository(context);
         }
         public ICategoryRepository Category { get; private set; }
         public ICoverTypeRepository CoverType { get; private set; }
@@ -28,6 +30,8 @@ namespace EBook.DataAccess.Repository
         public ICompanyRepository Company { get; private set; }
         public IApplicationUserRepository ApplicationUser { get; set; }
         public IShoppingCartRepository ShoppingCart { get; set; }
+        public IOrderRepository Order { get; set; }
+        public IOrderDetailsRepository OrderDetails { get; set; }
 
         public void Save()
         {

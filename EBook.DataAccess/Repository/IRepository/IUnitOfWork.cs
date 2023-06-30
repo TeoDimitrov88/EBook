@@ -15,6 +15,8 @@ namespace EBook.DataAccess.Repository.IRepository
         ICompanyRepository Company { get; }
         IApplicationUserRepository ApplicationUser { get; }
         IShoppingCartRepository ShoppingCart { get; }
+        IOrderRepository Order { get; }
+        IOrderDetailsRepository OrderDetails { get; }
 
         void Save();
     }
