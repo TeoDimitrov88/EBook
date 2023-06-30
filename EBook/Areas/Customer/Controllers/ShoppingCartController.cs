@@ -15,7 +15,7 @@ namespace EBookWeb.Areas.Customer.Controllers
 	public class ShoppingCartController : Controller
 	{
 		private readonly IUnitOfWork unitOfWork;
-		
+
 		[BindProperty]
 		public ShoppingCartVM ShoppingCartVM { get; set; }
 		public ShoppingCartController(IUnitOfWork _unitOfWork)
@@ -56,7 +56,7 @@ namespace EBookWeb.Areas.Customer.Controllers
 			ShoppingCartVM.Order.ApplicationUser = unitOfWork.ApplicationUser.GetFirstOrDefault(u => u.Id == claim.Value);
 
 			ShoppingCartVM.Order.Name = ShoppingCartVM.Order.ApplicationUser.Name;
-			ShoppingCartVM.Order.PhoneNumber=ShoppingCartVM.Order.ApplicationUser.PhoneNumber;
+			ShoppingCartVM.Order.PhoneNumber = ShoppingCartVM.Order.ApplicationUser.PhoneNumber;
 			ShoppingCartVM.Order.StreetAddress = ShoppingCartVM.Order.ApplicationUser.StreetAddress;
 			ShoppingCartVM.Order.City = ShoppingCartVM.Order.ApplicationUser.City;
 			ShoppingCartVM.Order.State = ShoppingCartVM.Order.ApplicationUser.State;
@@ -81,9 +81,7 @@ namespace EBookWeb.Areas.Customer.Controllers
 			var claim = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier);
 
 			ShoppingCartVM.ListCart = unitOfWork.ShoppingCart.GetAll(u => u.ApplicationUserId == claim.Value, includeProperties: "Product");
-				
-			ShoppingCartVM.Order.PaymentStatus = StaticConst.PaymentPendingStatus;
-			ShoppingCartVM.Order.OrderStatus = StaticConst.PendingStatus;
+
 			ShoppingCartVM.Order.OrderDate = System.DateTime.Now;
 			ShoppingCartVM.Order.ApplicationUserId = claim.Value;
 
@@ -94,6 +92,20 @@ namespace EBookWeb.Areas.Customer.Controllers
 			}
 
 			ApplicationUser applicationUser = unitOfWork.ApplicationUser.GetFirstOrDefault(u => u.Id == claim.Value);
+
+			if (applicationUser.CompanyId.GetValueOrDefault() == 0)
+			{
+				ShoppingCartVM.Order.PaymentStatus = StaticConst.PaymentPendingStatus;
+				ShoppingCartVM.Order.OrderStatus = StaticConst.PendingStatus;
+
+			}
+			else
+			{
+				ShoppingCartVM.Order.PaymentStatus = StaticConst.PaymentDelayedStatus;
+				ShoppingCartVM.Order.OrderStatus = StaticConst.ApprovedStatus;
+
+			}
+
 
 			unitOfWork.Order.Add(ShoppingCartVM.Order);
 			unitOfWork.Save();
@@ -170,15 +182,19 @@ namespace EBookWeb.Areas.Customer.Controllers
 		public IActionResult OrderConfirmation(int id)
 		{
 			Order order = unitOfWork.Order.GetFirstOrDefault(u => u.Id == id);
-			var service = new SessionService();
-			Session session = service.Get(order.SessionId);
-
-			//check the stripe settings
-			if (session.PaymentStatus.ToLower()=="paid")
+			if (order.PaymentStatus != StaticConst.PaymentDelayedStatus)
 			{
-				unitOfWork.Order.UpdateStatus(id, StaticConst.ApprovedStatus, StaticConst.PaymentApprovedStatus);
-				unitOfWork.Save();
+				var service = new SessionService();
+				Session session = service.Get(order.SessionId);
+
+				//check the stripe settings
+				if (session.PaymentStatus.ToLower() == "paid")
+				{
+					unitOfWork.Order.UpdateStatus(id, StaticConst.ApprovedStatus, StaticConst.PaymentApprovedStatus);
+					unitOfWork.Save();
+				}
 			}
+
 			List<ShoppingCart> shoppingCarts = unitOfWork.ShoppingCart.GetAll(u => u.ApplicationUserId == order.ApplicationUserId).ToList();
 			unitOfWork.ShoppingCart.RemoveRange(shoppingCarts);
 			unitOfWork.Save();
