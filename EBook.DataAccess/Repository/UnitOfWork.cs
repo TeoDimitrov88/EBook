@@ -1,5 +1,6 @@
 ﻿using EBook.DataAccess.Repository.IRepository;
 using EBook.Models;
+using EBook.Models.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,11 +19,15 @@ namespace EBook.DataAccess.Repository
             CoverType = new CoverTypeRepository(context);
             Product = new ProductRepository(context);
             Company = new CompanyRepository(context);
+            ApplicationUser= new ApplicationUserRepository(context);
+            ShoppingCart =new ShoppingCartRepository(context);
         }
         public ICategoryRepository Category { get; private set; }
         public ICoverTypeRepository CoverType { get; private set; }
         public IProductRepository Product { get; private set; }
         public ICompanyRepository Company { get; private set; }
+        public IApplicationUserRepository ApplicationUser { get; set; }
+        public IShoppingCartRepository ShoppingCart { get; set; }
 
         public void Save()
         {
