@@ -36,6 +36,25 @@ namespace EBookWeb.Areas.Customer.Controllers
             return View(ShoppingCartVM);
         }
 
+		public IActionResult Summary()
+		{
+			var claimsIdentity = (ClaimsIdentity)User.Identity;
+			var claim = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier);
+
+			ShoppingCartVM = new ShoppingCartVM()
+			{
+				ListCart = unitOfWork.ShoppingCart.GetAll(u => u.ApplicationUserId == claim.Value, includeProperties: "Product")
+			};
+
+			foreach (var cart in ShoppingCartVM.ListCart)
+			{
+				cart.Price = GetPriceBasedOnQuantity(cart.Count, cart.Product.Price, cart.Product.priceFor25, cart.Product.priceFor50);
+				ShoppingCartVM.CartTotal += (cart.Price * cart.Count);
+			}
+
+			return View(ShoppingCartVM);
+		}
+
 		public IActionResult Remove(int cartId)
 		{
 			var cart = unitOfWork.ShoppingCart.GetFirstOrDefault(u => u.Id == cartId);
@@ -57,7 +76,15 @@ namespace EBookWeb.Areas.Customer.Controllers
 		public IActionResult Minus(int cartId)
 		{
 			var cart = unitOfWork.ShoppingCart.GetFirstOrDefault(u => u.Id == cartId);
-			unitOfWork.ShoppingCart.DecrementCount(cart, 1);
+            if (cart.Count<=1)
+            {
+                unitOfWork.ShoppingCart.Remove(cart);
+            }
+            else
+            {
+            unitOfWork.ShoppingCart.DecrementCount(cart, 1);
+            }
+
 			unitOfWork.Save();
 
 			return RedirectToAction(nameof(Index));
