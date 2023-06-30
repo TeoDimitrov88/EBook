@@ -34,5 +34,13 @@ namespace EBook.DataAccess.Repository
 				}
 			}
 		}
+
+		public void UpdateStripePaymentId(int id, string sessionId, string paymentIntentId)
+		{
+			var orderFromDb = context.Orders.FirstOrDefault(u => u.Id == id);
+			
+			orderFromDb.SessionId= sessionId;
+			orderFromDb.PaymentIntenId = paymentIntentId;
+		}
 	}
 }
