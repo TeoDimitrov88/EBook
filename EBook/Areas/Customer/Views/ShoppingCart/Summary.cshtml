@@ -1,5 +1,7 @@
 ﻿@model EBook.Models.ViewModels.ShoppingCartVM
+@using Microsoft.Extensions.Options
 
+@inject IOptions<EBook.DataAccess.Common.StripeSettings> Stripe
 
 <form method="post">
 	<br />
