@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace EBook.DataAccess.Common
 {
-    public static class StaticConst
+    public static class Constants
     {
         public const string AdminRole = "Admin";
         public const string EmployeeRole = "Employee";

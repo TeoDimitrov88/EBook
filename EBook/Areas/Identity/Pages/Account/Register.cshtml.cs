@@ -133,13 +133,13 @@ namespace EBookWeb.Areas.Identity.Pages.Account
 
         public async Task OnGetAsync(string returnUrl = null)
         {
-            if (!_roleManager.RoleExistsAsync(StaticConst.AdminRole).GetAwaiter().GetResult())
+            if (!_roleManager.RoleExistsAsync(EBook.DataAccess.Common.Constants.AdminRole).GetAwaiter().GetResult())
             {
 
-                _roleManager.CreateAsync(new IdentityRole(StaticConst.AdminRole)).GetAwaiter().GetResult();
-                _roleManager.CreateAsync(new IdentityRole(StaticConst.UserRole)).GetAwaiter().GetResult();
-                _roleManager.CreateAsync(new IdentityRole(StaticConst.CompanyRole)).GetAwaiter().GetResult();
-                _roleManager.CreateAsync(new IdentityRole(StaticConst.EmployeeRole)).GetAwaiter().GetResult();
+                _roleManager.CreateAsync(new IdentityRole(EBook.DataAccess.Common.Constants.AdminRole)).GetAwaiter().GetResult();
+                _roleManager.CreateAsync(new IdentityRole(EBook.DataAccess.Common.Constants.UserRole)).GetAwaiter().GetResult();
+                _roleManager.CreateAsync(new IdentityRole(EBook.DataAccess.Common.Constants.CompanyRole)).GetAwaiter().GetResult();
+                _roleManager.CreateAsync(new IdentityRole(EBook.DataAccess.Common.Constants.EmployeeRole)).GetAwaiter().GetResult();
             }
             ReturnUrl = returnUrl;
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
@@ -175,7 +175,7 @@ namespace EBookWeb.Areas.Identity.Pages.Account
                 user.PostCode = Input.PostCode;
                 user.Name = Input.Name;
                 user.PhoneNumber = Input.PhoneNumber;
-                if (Input.Role == StaticConst.CompanyRole)
+                if (Input.Role == EBook.DataAccess.Common.Constants.CompanyRole)
                 {
                     user.CompanyId = Input.CompanyId;
                 }
@@ -187,7 +187,7 @@ namespace EBookWeb.Areas.Identity.Pages.Account
 
                     if (Input.Role == null)
                     {
-                        await _userManager.AddToRoleAsync(user, StaticConst.UserRole);
+                        await _userManager.AddToRoleAsync(user, EBook.DataAccess.Common.Constants.UserRole);
                     }
                     else
                     {

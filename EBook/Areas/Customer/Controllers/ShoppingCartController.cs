@@ -95,14 +95,14 @@ namespace EBookWeb.Areas.Customer.Controllers
 
 			if (applicationUser.CompanyId.GetValueOrDefault() == 0)
 			{
-				ShoppingCartVM.Order.PaymentStatus = StaticConst.PaymentPendingStatus;
-				ShoppingCartVM.Order.OrderStatus = StaticConst.PendingStatus;
+				ShoppingCartVM.Order.PaymentStatus = Constants.PaymentPendingStatus;
+				ShoppingCartVM.Order.OrderStatus = Constants.PendingStatus;
 
 			}
 			else
 			{
-				ShoppingCartVM.Order.PaymentStatus = StaticConst.PaymentDelayedStatus;
-				ShoppingCartVM.Order.OrderStatus = StaticConst.ApprovedStatus;
+				ShoppingCartVM.Order.PaymentStatus = Constants.PaymentDelayedStatus;
+				ShoppingCartVM.Order.OrderStatus = Constants.ApprovedStatus;
 
 			}
 
@@ -182,7 +182,7 @@ namespace EBookWeb.Areas.Customer.Controllers
 		public IActionResult OrderConfirmation(int id)
 		{
 			Order order = unitOfWork.Order.GetFirstOrDefault(u => u.Id == id);
-			if (order.PaymentStatus != StaticConst.PaymentDelayedStatus)
+			if (order.PaymentStatus != Constants.PaymentDelayedStatus)
 			{
 				var service = new SessionService();
 				Session session = service.Get(order.SessionId);
@@ -190,7 +190,7 @@ namespace EBookWeb.Areas.Customer.Controllers
 				//check the stripe settings
 				if (session.PaymentStatus.ToLower() == "paid")
 				{
-					unitOfWork.Order.UpdateStatus(id, StaticConst.ApprovedStatus, StaticConst.PaymentApprovedStatus);
+					unitOfWork.Order.UpdateStatus(id, Constants.ApprovedStatus, Constants.PaymentApprovedStatus);
 					unitOfWork.Save();
 				}
 			}
