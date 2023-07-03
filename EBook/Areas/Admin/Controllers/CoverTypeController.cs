@@ -1,7 +1,7 @@
 ﻿using EBook.DataAccess;
 using EBook.DataAccess.Common;
 using EBook.DataAccess.Repository.IRepository;
-using EBook.Models;
+using EBook.Models.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 

@@ -1,5 +1,6 @@
-﻿using EBook.DataAccess.Repository.IRepository;
-using EBook.Models;
+﻿using EBook.DataAccess.Data;
+using EBook.DataAccess.Repository.IRepository;
+using EBook.Models.Models;
 
 namespace EBook.DataAccess.Repository
 {

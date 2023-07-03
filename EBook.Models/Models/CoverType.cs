@@ -6,14 +6,14 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace EBook.Models
+namespace EBook.Models.Models
 {
     public class CoverType
     {
         [Key]
         public int Id { get; set; }
 
-        [Display(Name="Cover type")]
+        [Display(Name = "Cover type")]
         [Required]
         [MaxLength(50)]
         public string Name { get; set; }

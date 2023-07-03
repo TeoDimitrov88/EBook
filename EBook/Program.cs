@@ -1,4 +1,3 @@
-using EBook.DataAccess;
 using EBook.DataAccess.Repository;
 using EBook.DataAccess.Repository.IRepository;
 using Microsoft.EntityFrameworkCore;
@@ -6,6 +5,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using EBook.DataAccess.Common;
 using Stripe;
+using EBook.DataAccess.Data;
 
 var builder = WebApplication.CreateBuilder(args);
 

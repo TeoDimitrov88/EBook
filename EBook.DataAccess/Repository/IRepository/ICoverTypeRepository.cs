@@ -1,4 +1,4 @@
-﻿using EBook.Models;
+﻿using EBook.Models.Models;
 
 namespace EBook.DataAccess.Repository.IRepository
 {

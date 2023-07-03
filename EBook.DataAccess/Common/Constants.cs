@@ -15,16 +15,16 @@ namespace EBook.DataAccess.Common
 
 
         public const string PendingStatus = "Pending";
-		public const string ApprovedStatus = "Approved";
-		public const string InProcessStatus = "Processing";
-		public const string ShippedStatus = "Shipped";
-		public const string CancelledStatus = "Cancelled";
-		public const string RefundedStatus = "Refunded";
+        public const string ApprovedStatus = "Approved";
+        public const string InProcessStatus = "Processing";
+        public const string ShippedStatus = "Shipped";
+        public const string CancelledStatus = "Cancelled";
+        public const string RefundedStatus = "Refunded";
 
 
-		public const string PaymentPendingStatus = "Pending";
-		public const string PaymentApprovedStatus = "Approved";
-		public const string PaymentDelayedStatus = "ApprovedForDelayedPayment";
-		public const string PaymentRejectedStatus = "Rejected";
-	}
+        public const string PaymentPendingStatus = "Pending";
+        public const string PaymentApprovedStatus = "Approved";
+        public const string PaymentDelayedStatus = "ApprovedForDelayedPayment";
+        public const string PaymentRejectedStatus = "Rejected";
+    }
 }
