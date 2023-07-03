@@ -1,11 +1,14 @@
 ﻿using EBook.DataAccess;
+using EBook.DataAccess.Common;
 using EBook.DataAccess.Repository.IRepository;
 using EBook.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace EBookWeb.Areas.Admin.Controllers
 {
     [Area("Admin")]
+    [Authorize(Roles = Constants.AdminRole)]
     public class CoverTypeController : Controller
     {
         private readonly IUnitOfWork unitOfWork;

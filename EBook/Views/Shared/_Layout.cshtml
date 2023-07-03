@@ -1,4 +1,5 @@
-﻿<!DOCTYPE html>
+﻿@using EBook.DataAccess.Common;
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
@@ -29,36 +30,41 @@
                             </a>
                         </li>
                         <li class="nav-item">
-                            </li>
-                        <li class="nav-item">
-                            </li>
-                        
-                        <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">Content</a>
-                            <div class="dropdown-menu">
-                                <a class="dropdown-item" asp-area="Admin" asp-controller="Category" asp-action="Index">Category</a>
-                                <a class="dropdown-item" asp-area="Admin" asp-controller="CoverType" asp-action="Index">Cover Type</a>
-                                <a class="dropdown-item" asp-area="Admin" asp-controller="Product" asp-action="Index">Products</a>
-
-                                <div class="dropdown-divider"></div>
-                                <a class="dropdown-item" asp-area="Admin" asp-controller="Company" asp-action="Index">Company</a>
-                            </div>
                         </li>
+                        <li class="nav-item">
+                        </li>
+                        @if (User.IsInRole(Constants.AdminRole))
+                        {
+
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">Content</a>
+                                <div class="dropdown-menu">
+                                    <a class="dropdown-item" asp-area="Admin" asp-controller="Category" asp-action="Index">Category</a>
+                                    <a class="dropdown-item" asp-area="Admin" asp-controller="CoverType" asp-action="Index">Cover Type</a>
+                                    <a class="dropdown-item" asp-area="Admin" asp-controller="Product" asp-action="Index">Products</a>
+
+                                    <div class="dropdown-divider"></div>
+                                    <a class="dropdown-item" asp-area="Admin" asp-controller="Company" asp-action="Index">Company</a>
+                                </div>
+                            </li>
+                        }
+
                         <li class="nav-item">
                             <a class="nav-link" asp-area="Admin" asp-controller="Order" asp-action="Index">
                                 Manage Order
                             </a>
                         </li>
+
                         <li class="nav-item">
-                            <a class="nav-link" asp-area="Customer" asp-controller="ShoppingCart" asp-action="Index">
-                                <i class="bi bi-bag-check-fill"></i>
+                             <a class="nav-link" asp-area="Customer" asp-controller="ShoppingCart" asp-action="Index">
+                            <i class="bi bi-bag-check-fill"></i>
                             </a>
                         </li>
                     </ul>
                     <partial name="_LoginPartial" />
                     @*<form class="d-flex">
-                        <input class="form-control me-sm-2" type="search" placeholder="Search">
-                        <button class="btn btn-secondary my-2 my-sm-0" type="submit">Search</button>
+                    <input class="form-control me-sm-2" type="search" placeholder="Search">
+                    <button class="btn btn-secondary my-2 my-sm-0" type="submit">Search</button>
                     </form>*@
                 </div>
             </div>
@@ -73,7 +79,7 @@
 
     <footer class="footer text-muted bg-primary">
         <div class="container text-white">
-            &copy; 2023 - EBook 
+            &copy; 2023 - EBook
         </div>
     </footer>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
@@ -81,9 +87,9 @@
     <script src="~/js/site.js" asp-append-version="true"></script>
     <script src="//cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-   <script src="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js
+    <script src="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js
 "></script>
-   <script src="https://cdn.tiny.cloud/1/n94ifuzvl80pchikopiwgz2esrw8n28dwcywvpejlqrregfp/tinymce/5/tinymce.min.js" referrerpolicy="origin"></script>
+    <script src="https://cdn.tiny.cloud/1/n94ifuzvl80pchikopiwgz2esrw8n28dwcywvpejlqrregfp/tinymce/5/tinymce.min.js" referrerpolicy="origin"></script>
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>
