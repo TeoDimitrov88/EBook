@@ -19,7 +19,7 @@ namespace EBook.DataAccess.Repository
 
 		public void Update(Order order)
 		{
-			throw new NotImplementedException();
+			context.Orders.Update(order);
 		}
 
 		public void UpdateStatus(int id, string orderStatus, string? paymentStatus = null)

@@ -190,6 +190,7 @@ namespace EBookWeb.Areas.Customer.Controllers
 				//check the stripe settings
 				if (session.PaymentStatus.ToLower() == "paid")
 				{
+					unitOfWork.Order.UpdateStripePaymentId(id, order.SessionId, session.PaymentIntentId);
 					unitOfWork.Order.UpdateStatus(id, Constants.ApprovedStatus, Constants.PaymentApprovedStatus);
 					unitOfWork.Save();
 				}
