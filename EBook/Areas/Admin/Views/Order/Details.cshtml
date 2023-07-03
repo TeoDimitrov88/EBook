@@ -234,6 +234,10 @@
                                     </div>
                                 </li>
                             </ul>
+                            @if (User.IsInRole(Constants.UserRole) || User.IsInRole(Constants.CompanyRole))
+                            {
+                            <input type="submit" class="btn btn-success form-control my-1" value="Pay Now" />
+                            }
                             @if (Model.Order.PaymentStatus == Constants.PaymentDelayedStatus &&
                             Model.Order.OrderStatus == Constants.ShippedStatus)
                             {
@@ -243,12 +247,12 @@
                             {
                                 if (Model.Order.OrderStatus == Constants.ApprovedStatus)
                                 {
-                                    <input type="submit" asp-action="StartProcessing" class="btn btn-primary form-control my-1" value="Start Processing" />
+                                    <input type="submit" asp-action="StartProcessing" class="btn btn-success form-control my-1" value="Start Processing" />
                                 }
                                 if (Model.Order.OrderStatus == Constants.InProcessStatus)
                                 {
                                     <input type="submit" onclick="return validateInput()"
-                                           asp-action="ShipOrder" class="btn btn-primary form-control my-1" value="Ship Order" />
+                                           asp-action="ShipOrder" class="btn btn-secondary form-control my-1" value="Ship Order" />
                                 }
 
                                 @if (Model.Order.OrderStatus != Constants.RefundedStatus &&

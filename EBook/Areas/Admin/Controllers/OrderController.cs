@@ -6,6 +6,7 @@ using EBook.Models.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Stripe;
+using Stripe.Checkout;
 using System.Diagnostics;
 using System.Security.Claims;
 
@@ -39,7 +40,78 @@ namespace EBookWeb.Areas.Admin.Controllers
 			return View(OrderVM);
 		}
 
+		[ActionName("Details")]
 		[HttpPost]
+		[ValidateAntiForgeryToken]
+        public IActionResult Details_PAY_NOW()
+        {
+			OrderVM.Order = unitOfWork.Order.GetFirstOrDefault(u => u.Id == OrderVM.Order.Id, includeProperties: "ApplicationUser");
+			OrderVM.OrderDetail = unitOfWork.OrderDetails.GetAll(u => u.OrderId == OrderVM.Order.Id, includeProperties: "Product");
+
+            //stripe settings 
+            var domain = "https://localhost:44305/";
+            var options = new SessionCreateOptions
+            {
+                PaymentMethodTypes = new List<string>
+                {
+                  "card",
+                },
+                LineItems = new List<SessionLineItemOptions>(),
+                Mode = "payment",
+                SuccessUrl = domain + $"admin/order/PaymentConfirmation?orderId={OrderVM.Order.Id}",
+                CancelUrl = domain + $"admin/order/details?orderId={OrderVM.Order.Id}",
+            };
+
+            foreach (var item in OrderVM.OrderDetail)
+            {
+
+                var sessionLineItem = new SessionLineItemOptions
+                {
+                    PriceData = new SessionLineItemPriceDataOptions
+                    {
+                        UnitAmount = (long)(item.Price * 100),//20.00 -> 2000
+                        Currency = "bgn",
+                        ProductData = new SessionLineItemPriceDataProductDataOptions
+                        {
+                            Name = item.Product.Title
+                        },
+
+                    },
+                    Quantity = item.Count,
+                };
+                options.LineItems.Add(sessionLineItem);
+
+            }
+
+            var service = new SessionService();
+            Session session = service.Create(options);
+            unitOfWork.Order.UpdateStripePaymentId(OrderVM.Order.Id, session.Id, session.PaymentIntentId);
+            unitOfWork.Save();
+            Response.Headers.Add("Location", session.Url);
+            return new StatusCodeResult(303);
+        }
+
+        public IActionResult PaymentConfirmation(int orderId)
+        {
+            Order order = unitOfWork.Order.GetFirstOrDefault(u => u.Id == orderId);
+            if (order.PaymentStatus == Constants.PaymentDelayedStatus)
+            {
+                var service = new SessionService();
+                Session session = service.Get(order.SessionId);
+
+                //check the stripe settings
+                if (session.PaymentStatus.ToLower() == "paid")
+                {
+                    unitOfWork.Order.UpdateStripePaymentId(orderId, order.SessionId, session.PaymentIntentId);
+                    unitOfWork.Order.UpdateStatus(orderId, order.OrderStatus, Constants.PaymentApprovedStatus);
+                    unitOfWork.Save();
+                }
+            }
+            return View(orderId);
+
+        }
+
+        [HttpPost]
 		[Authorize(Roles =Constants.AdminRole + "," + Constants.EmployeeRole)]
 		[ValidateAntiForgeryToken]
 		public IActionResult UpdateOrderDetail()

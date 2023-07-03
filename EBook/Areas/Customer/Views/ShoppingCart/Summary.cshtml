@@ -14,7 +14,7 @@
 						Order Summary
 					</div>
 					<div class="col-6 text-end">
-						<a asp-action="Index" class="btn btn-outline-info btn-sm">Back to Cart</a>
+						<a asp-action="Index" class="btn btn-info btn-sm">Back to Cart</a>
 					</div>
 				</div>
 			</div>
@@ -74,7 +74,7 @@
 							</div>
 							<div class="row my-1">
 								<div class="col-3">
-									<label>Postal Code</label>
+									<label>Post Code</label>
 								</div>
 								<div class="col-9">
 									<input asp-for="Order.PostCode" class="form-control" />
@@ -98,7 +98,7 @@
 									</li>
 								}
 								<li class="list-group-item d-flex justify-content-between bg-light">
-									<small class="text-info">Total (USD)</small>
+									<small class="text-info">Total (BGN)</small>
 									<strong class="text-info">@Model.Order.OrderTotal.ToString("c")</strong>
 								</li>
 							</ul>
