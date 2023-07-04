@@ -197,6 +197,7 @@ namespace EBookWeb.Areas.Customer.Controllers
             }
 
             List<ShoppingCart> shoppingCarts = unitOfWork.ShoppingCart.GetAll(u => u.ApplicationUserId == order.ApplicationUserId).ToList();
+            HttpContext.Session.Clear();
             unitOfWork.ShoppingCart.RemoveRange(shoppingCarts);
             unitOfWork.Save();
 

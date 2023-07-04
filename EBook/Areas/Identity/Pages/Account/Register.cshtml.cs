@@ -23,7 +23,6 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Logging;
-using Microsoft.VisualBasic;
 
 namespace EBookWeb.Areas.Identity.Pages.Account
 {
@@ -211,8 +210,17 @@ namespace EBookWeb.Areas.Identity.Pages.Account
                     }
                     else
                     {
-                        await _signInManager.SignInAsync(user, isPersistent: false);
-                        return LocalRedirect(returnUrl);
+                        if (User.IsInRole(Constants.AdminRole))
+                        {
+                            TempData["success"] = "New User Created Successfully!";
+                            return Page();
+                        }
+                        else
+                        {
+                            await _signInManager.SignInAsync(user, isPersistent: false);
+                            return LocalRedirect(returnUrl);
+                        }
+
                     }
                 }
                 foreach (var error in result.Errors)
