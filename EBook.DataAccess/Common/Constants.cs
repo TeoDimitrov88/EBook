@@ -26,5 +26,7 @@ namespace EBook.DataAccess.Common
         public const string PaymentApprovedStatus = "Approved";
         public const string PaymentDelayedStatus = "ApprovedForDelayedPayment";
         public const string PaymentRejectedStatus = "Rejected";
+
+        public const string SessionCart = "SessionShoppingCart";
     }
 }

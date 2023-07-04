@@ -1,4 +1,5 @@
-﻿using EBook.DataAccess.Repository.IRepository;
+﻿using EBook.DataAccess.Common;
+using EBook.DataAccess.Repository.IRepository;
 using EBook.Models;
 using EBook.Models.Models;
 using EBook.Models.ViewModels;
@@ -52,13 +53,16 @@ namespace EBookWeb.Areas.Customer.Controllers
             if (cartFromDb==null)
             {
                 unitOfWork.ShoppingCart.Add(shoppingCart);
+                unitOfWork.Save();
+                HttpContext.Session.SetInt32(Constants.SessionCart, unitOfWork.ShoppingCart.GetAll(u => u.ApplicationUserId == claim.Value).ToList().Count);
             }
             else
             {
                 unitOfWork.ShoppingCart.IncrementCount(cartFromDb, shoppingCart.Count);
+                unitOfWork.Save();
             }
 
-            unitOfWork.Save();
+           
 
             return RedirectToAction(nameof(Index));
         }

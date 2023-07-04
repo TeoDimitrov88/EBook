@@ -1,4 +1,7 @@
-﻿@using EBook.DataAccess.Common;
+﻿@using Microsoft.AspNetCore.Http;
+@using EBook.DataAccess.Common;
+@inject IHttpContextAccessor HttpContextAccessor;
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -54,12 +57,23 @@
                                 Manage Order
                             </a>
                         </li>
-
-                        <li class="nav-item">
-                             <a class="nav-link" asp-area="Customer" asp-controller="ShoppingCart" asp-action="Index">
-                            <i class="bi bi-bag-check-fill"></i>
-                            </a>
-                        </li>
+                        @if (HttpContextAccessor.HttpContext.Session.GetInt32(Constants.SessionCart) != null)
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link" asp-area="Customer" asp-controller="ShoppingCart" asp-action="Index">
+                                    <i class="bi bi-bag-check-fill"></i> &nbsp;
+                                    (@HttpContextAccessor.HttpContext.Session.GetInt32(Constants.SessionCart))
+                                </a>
+                            </li>
+                        }
+                        else
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link" asp-area="Customer" asp-controller="ShoppingCart" asp-action="Index">
+                                    <i class="bi bi-bag-check-fill"></i> &nbsp; (0)
+                                </a>
+                            </li>
+                        }
                     </ul>
                     <partial name="_LoginPartial" />
                     @*<form class="d-flex">
